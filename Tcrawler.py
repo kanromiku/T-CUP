@@ -3,40 +3,74 @@ import requests
 from lxml import etree
 
 
-class crawler():
-    def __init__(self, top=20):
+def find_price_range_intersection(price_range):
+    # 将字符串转换为（min, max）元组
 
+    intersection = price_range[0]
+
+    # 遍历剩余的价格区间
+    for current_range in price_range[1:]:
+
+        # 当前区间与交集的交集
+        new_intersection = (
+            max(intersection[0], current_range[0]),
+            min(intersection[1], current_range[1])
+        )
+
+        # 检查新的交集是否有效
+        if new_intersection[0] > new_intersection[1]:
+            continue
+
+            # 更新交集
+        intersection = new_intersection
+
+    return intersection
+
+
+class Crawler:
+    def __init__(self, top=20):
 
         self.ev_cars = []
         self.fuel_cars = []
         self.all_cars = []
 
-
         self.top = top
 
-        self.df = None
-        self.merged_df = None
-        self.ev_df = None
-        self.fc_df = None
+        self.df = pd.DataFrame()
+        self.merged_df = pd.DataFrame()
+        self.ev_df = pd.DataFrame()
+        self.fc_df = pd.DataFrame()
 
         self.crawl()
         self.to_df()
 
-        self.ev_price_range = [(float(self.ev_df.loc[_, 'LPrice']),float(self.ev_df.loc[_, 'HPrice'])) for _ in range(self.top)]
+        self.ev_price_range = [(float(self.ev_df.loc[_, 'LPrice']), float(self.ev_df.loc[_, 'HPrice'])) for _ in
+                               range(self.top)]
         print(self.ev_price_range)
         self.fc_price_range = [(float(self.fc_df.loc[_, 'LPrice']), float(self.fc_df.loc[_, 'HPrice'])) for _ in
                                range(self.top)]
         print(self.ev_price_range)
-        self.ev_intersection = self.find_price_range_intersection(self.ev_price_range)
-        self.fc_intersection = self.find_price_range_intersection(self.fc_price_range)
+        self.ev_intersection = find_price_range_intersection(self.ev_price_range)
+        self.fc_intersection = find_price_range_intersection(self.fc_price_range)
         print(self.ev_intersection)
         print(self.fc_intersection)
+
     def crawl(self):
         # 爬取新能源车排行榜前self.top的相关数据
-        session = requests.Session() # 使用Session优化爬取速度
+        session = requests.Session()  # 使用Session优化爬取速度
         headers_1 = {
-            'Cookie': 'fvlid=1716013576861KOtAec71nT; sessionid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18+14%3A26%3A06.790%7C%7C0; autoid=efc2d15769498f97fd8076ec436543f3; cookieCityId=110100; __ah_uuid_ng=c_C6117FE6-D242-4853-9E44-38F3EAA90481; area=310120; sessionuid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18+14%3A26%3A06.790%7C%7C0; wwwjbtab=0%2C0; pvidlist=5d1bb3c7-35e5-42e1-9c33-e1ec416c1f153:631328:980272:0:1:5072904; ASP.NET_SessionId=gsmxvlyrrd3i5nhgkngdvhk0; ahsids=5761_5964; historyseries=5761%2C5964; sessionip=61.165.108.8; Hm_lvt_9924a05a5a75caf05dbbfb51af638b07=1719028355,1719039011,1719071065; ahpvno=70; Hm_lpvt_9924a05a5a75caf05dbbfb51af638b07=1719072085; v_no=21; visit_info_ad=C6117FE6-D242-4853-9E44-38F3EAA90481||B1ECA9E0-678B-4FCE-B7DC-4EC0A8CD1A07||-1||-1||21; ref=0%7C0%7C0%7C0%7C2024-06-23+00%3A01%3A25.523%7C2024-05-18+14%3A26%3A06.790',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'Cookie': 'fvlid=1716013576861KOtAec71nT; sessionid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18'
+                      '+14%3A26%3A06.790%7C%7C0; autoid=efc2d15769498f97fd8076ec436543f3; cookieCityId=110100; '
+                      '__ah_uuid_ng=c_C6117FE6-D242-4853-9E44-38F3EAA90481; area=310120; '
+                      'sessionuid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18+14%3A26%3A06.790%7C%7C0; '
+                      'wwwjbtab=0%2C0; pvidlist=5d1bb3c7-35e5-42e1-9c33-e1ec416c1f153:631328:980272:0:1:5072904; '
+                      'ASP.NET_SessionId=gsmxvlyrrd3i5nhgkngdvhk0; ahsids=5761_5964; historyseries=5761%2C5964; '
+                      'sessionip=61.165.108.8; Hm_lvt_9924a05a5a75caf05dbbfb51af638b07=1719028355,1719039011,'
+                      '1719071065; ahpvno=70; Hm_lpvt_9924a05a5a75caf05dbbfb51af638b07=1719072085; v_no=21; '
+                      'visit_info_ad=C6117FE6-D242-4853-9E44-38F3EAA90481||B1ECA9E0-678B-4FCE-B7DC-4EC0A8CD1A07||-1'
+                      '||-1||21; ref=0%7C0%7C0%7C0%7C2024-06-23+00%3A01%3A25.523%7C2024-05-18+14%3A26%3A06.790',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/126.0.0.0 Safari/537.36',
         }
         url_1 = 'https://www.autohome.com.cn/rank/9-2305-0-0_9000-x-x-x/2024-05.html'
         html_1 = session.get(url_1, headers=headers_1).text
@@ -54,7 +88,6 @@ class crawler():
                     i) + ']/div[3]/div[2]/span/strong/text()')
             ID_1 = et_1.xpath(
                 '/html/body/main/div/div[2]/div[3]/div[1]/div[2]/div/div/div[' + str(i) + ']/button/@data-series-id')
-
 
             MZ_1 = ','.join(MZ_1)  # 新能源车名字
             JG_1 = ','.join(JG_1)  # 新能源车价格
@@ -89,8 +122,21 @@ class crawler():
 
         # 爬取燃油车排行榜前self.top的相关数据
         headers_2 = {
-            'Cookie': 'fvlid=1716013576861KOtAec71nT; sessionid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18+14%3A26%3A06.790%7C%7C0; autoid=efc2d15769498f97fd8076ec436543f3; cookieCityId=110100; __ah_uuid_ng=c_C6117FE6-D242-4853-9E44-38F3EAA90481; area=310120; sessionuid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18+14%3A26%3A06.790%7C%7C0; wwwjbtab=0%2C0; pvidlist=5d1bb3c7-35e5-42e1-9c33-e1ec416c1f153:631328:980272:0:1:5072904; ASP.NET_SessionId=gsmxvlyrrd3i5nhgkngdvhk0; Hm_lvt_9924a05a5a75caf05dbbfb51af638b07=1719028355,1719039011,1719071065; Hm_lpvt_9924a05a5a75caf05dbbfb51af638b07=1719072085; sessionip=61.165.109.24; ahsids=5769_5761_5964; historyseries=5769%2C5761%2C5964; ahpvno=77; sessionvid=E6B929E8-CA56-4575-BEBC-950912D2EA3C; v_no=5; visit_info_ad=C6117FE6-D242-4853-9E44-38F3EAA90481||E6B929E8-CA56-4575-BEBC-950912D2EA3C||-1||-1||5; ref=0%7C0%7C0%7C0%7C2024-06-23+13%3A27%3A10.675%7C2024-05-18+14%3A26%3A06.790; ahrlid=1719120431078YZ5GMSXZrY-1719120446160',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'Cookie': 'fvlid=1716013576861KOtAec71nT; sessionid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18'
+                      '+14%3A26%3A06.790%7C%7C0; autoid=efc2d15769498f97fd8076ec436543f3; cookieCityId=110100; '
+                      '__ah_uuid_ng=c_C6117FE6-D242-4853-9E44-38F3EAA90481; area=310120; '
+                      'sessionuid=C6117FE6-D242-4853-9E44-38F3EAA90481%7C%7C2024-05-18+14%3A26%3A06.790%7C%7C0; '
+                      'wwwjbtab=0%2C0; pvidlist=5d1bb3c7-35e5-42e1-9c33-e1ec416c1f153:631328:980272:0:1:5072904; '
+                      'ASP.NET_SessionId=gsmxvlyrrd3i5nhgkngdvhk0; '
+                      'Hm_lvt_9924a05a5a75caf05dbbfb51af638b07=1719028355,1719039011,1719071065; '
+                      'Hm_lpvt_9924a05a5a75caf05dbbfb51af638b07=1719072085; sessionip=61.165.109.24; '
+                      'ahsids=5769_5761_5964; historyseries=5769%2C5761%2C5964; ahpvno=77; '
+                      'sessionvid=E6B929E8-CA56-4575-BEBC-950912D2EA3C; v_no=5; '
+                      'visit_info_ad=C6117FE6-D242-4853-9E44-38F3EAA90481||E6B929E8-CA56-4575-BEBC-950912D2EA3C||-1'
+                      '||-1||5; ref=0%7C0%7C0%7C0%7C2024-06-23+13%3A27%3A10.675%7C2024-05-18+14%3A26%3A06.790; '
+                      'ahrlid=1719120431078YZ5GMSXZrY-1719120446160',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+                          'Chrome/126.0.0.0 Safari/537.36',
         }
         url_2 = 'https://www.autohome.com.cn/rank/1-1-0-0_9000-x-1-x/2024-05.html'
         html_2 = session.get(url_2, headers=headers_2).text
@@ -109,7 +155,6 @@ class crawler():
                     i) + ']/div[3]/div[2]/span/strong/text()')
             ID_2 = et_2.xpath(
                 '/html/body/main/div/div[2]/div[3]/div[1]/div[2]/div/div/div[' + str(i) + ']/button/@data-series-id')
-
 
             MZ_2 = ','.join(MZ_2)  # 燃油车名字
             JG_2 = ','.join(JG_2)  # 燃油车价格
@@ -142,28 +187,6 @@ class crawler():
             print(str(i), MZ_2, JG_2, XL_2, PF_2, LVL_2)
             self.fuel_cars.append(temp_dict)
 
-    def find_price_range_intersection(self, price_range):
-        # 将字符串转换为（min, max）元组
-
-        intersection = price_range[0]
-
-        # 遍历剩余的价格区间
-        for current_range in price_range[1:]:
-
-            # 当前区间与交集的交集
-            new_intersection = (
-                max(intersection[0], current_range[0]),
-                min(intersection[1], current_range[1])
-            )
-
-            # 检查新的交集是否有效
-            if new_intersection[0] > new_intersection[1]:
-                continue
-
-                # 更新交集
-            intersection = new_intersection
-
-        return intersection
     def to_df(self):
         # 将新能源车和燃油车的数据合并到一个DataFrame中
         self.all_cars = self.ev_cars + self.fuel_cars
@@ -184,6 +207,6 @@ class crawler():
             print(f"Unsupported file format: {file_format}")
 
 
-cr = crawler()
+cr = Crawler()
 cr.save_to_file('cars_data.xlsx', 'xlsx')  # 保存为Excel文件
 cr.save_to_file('cars_data.csv', 'csv')  # 保存为CSV文件
