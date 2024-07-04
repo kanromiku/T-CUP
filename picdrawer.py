@@ -1,3 +1,4 @@
+import os
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -6,6 +7,16 @@ from Tcrawler import Crawler
 
 mpl.rcParams['font.sans-serif'] = ['SimHei']
 
+path1 = "./assets/ev"
+path2 = "./assets/fv"
+path3 = "./assets/general"
+
+if not os.path.exists(path1):
+    os.makedirs(path1)
+if not os.path.exists(path2):
+    os.makedirs(path2)
+if not os.path.exists(path3):
+    os.makedirs(path3)
 
 class Draw(Crawler):
     def __init__(self):
@@ -58,7 +69,7 @@ class Draw(Crawler):
         ax1.set_title('新能源车报价及销量')
         ax2.set_ylabel('销量')
 
-        fig.savefig('./assets/ev/price_and_sales.jpg')
+        fig.savefig('./assets/ev/price_and_sales.png')
 
         fig.show()
 
@@ -102,7 +113,7 @@ class Draw(Crawler):
         ax3.set_title('燃油车报价及销量')
         ax4.set_ylabel('销量')
 
-        fig.savefig('./assets/fv/price_and_sales.jpg')
+        fig.savefig('./assets/fv/price_and_sales.png')
 
         fig.show()
 
@@ -124,7 +135,7 @@ class Draw(Crawler):
         ax1.set_ylabel('评分')
         ax1.set_title(f'新能源车销量top{self.top}评分')
 
-        fig.savefig('./assets/ev/score.jpg')
+        fig.savefig('./assets/ev/score.png')
 
         fig.show()
 
@@ -146,7 +157,7 @@ class Draw(Crawler):
         ax1.set_ylabel('评分')
         ax1.set_title(f'燃油车销量top{self.top}评分')
 
-        fig.savefig('./assets/fv/score.jpg')
+        fig.savefig('./assets/fv/score.png')
 
         fig.show()
 
@@ -214,7 +225,7 @@ class Draw(Crawler):
 
         fig.tight_layout()
         fig.show()
-        fig.savefig('./assets/general/level.jpg')
+        fig.savefig('./assets/general/level.png')
 
 
 dr = Draw()
