@@ -22,7 +22,8 @@ if not os.path.exists(path3):
 class Draw(Crawler):
     def __init__(self):
         super().__init__()
-        print(self.df)
+        pd.options.mode.chained_assignment = None
+        # print(self.df)
         # print(self.top)
         self.ev_draw_price_and_sales()
         self.fv_draw_price_and_sales()

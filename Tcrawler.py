@@ -30,6 +30,7 @@ def find_price_range_intersection(price_range):
 class Crawler:
     def __init__(self, top=20):
 
+        pd.options.mode.chained_assignment = None
         self.ev_cars = []
         self.fuel_cars = []
         self.all_cars = []
@@ -46,14 +47,14 @@ class Crawler:
 
         self.ev_price_range = [(float(self.ev_df.loc[_, 'LPrice']), float(self.ev_df.loc[_, 'HPrice'])) for _ in
                                range(self.top)]
-        print(self.ev_price_range)
+        # print(self.ev_price_range)
         self.fc_price_range = [(float(self.fc_df.loc[_, 'LPrice']), float(self.fc_df.loc[_, 'HPrice'])) for _ in
                                range(self.top)]
-        print(self.ev_price_range)
+        # print(self.ev_price_range)
         self.ev_intersection = find_price_range_intersection(self.ev_price_range)
         self.fc_intersection = find_price_range_intersection(self.fc_price_range)
-        print(self.ev_intersection)
-        print(self.fc_intersection)
+        # print(self.ev_intersection)
+        # print(self.fc_intersection)
 
     def crawl(self):
         # 爬取新能源车排行榜前self.top的相关数据
@@ -117,7 +118,7 @@ class Crawler:
             temp_dict['Score'] = PF_1.strip()
             temp_dict['Level'] = LVL_1.strip()
 
-            print(str(i), MZ_1, JG_1, XL_1, PF_1, LVL_1)
+            # print(str(i), MZ_1, JG_1, XL_1, PF_1, LVL_1)
             self.ev_cars.append(temp_dict)
 
         # 爬取燃油车排行榜前self.top的相关数据
@@ -184,7 +185,7 @@ class Crawler:
             temp_dict['Score'] = PF_2.strip()
             temp_dict['Level'] = LVL_2.strip()
 
-            print(str(i), MZ_2, JG_2, XL_2, PF_2, LVL_2)
+            # print(str(i), MZ_2, JG_2, XL_2, PF_2, LVL_2)
             self.fuel_cars.append(temp_dict)
 
     def to_df(self):
@@ -208,5 +209,5 @@ class Crawler:
 
 
 cr = Crawler()
-cr.save_to_file('cars_data.xlsx', 'xlsx')  # 保存为Excel文件
-cr.save_to_file('cars_data.csv', 'csv')  # 保存为CSV文件
+cr.save_to_file('./assets/cars_data.xlsx', 'xlsx')  # 保存为Excel文件
+cr.save_to_file('./assets/cars_data.csv', 'csv')  # 保存为CSV文件
