@@ -1,4 +1,3 @@
-import pandas as pd
 import os
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -190,7 +189,7 @@ class Draw(Crawler):
 
         fig = plt.figure(figsize=(12, 6), dpi=200)
 
-        fig1 = plt.subplot(1, 3, 1)
+        fig1=plt.subplot(1,3,1)
         fig1.pie(
             fv_value,
             labels=fv_key,

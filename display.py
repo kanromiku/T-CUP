@@ -74,7 +74,7 @@ class MainWindow(QWidget):
     def setImg(self):
         self.img_dir = self.dir_name + '\\assets\\' + trans(self.combo.currentText()) + '\\' + trans(str(self.btn_count)) + ".png"
         self.img = QPixmap(self.img_dir)
-        self.ImgLabel.setPixmap(self.img.scaled(1500, 900, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # 保持横纵比
+        self.ImgLabel.setPixmap(self.img.scaled(1300, 650, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # 保持横纵比
         self.ImgLabel.setScaledContents(True)
         print(self.img_dir)
 
