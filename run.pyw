@@ -3,10 +3,10 @@ import os
 
 from PyQt5.QtWidgets import QApplication
 
-from picdrawer import Draw
+from picdrawer import Drawer
 from display import MainWindow
 
-dr = Draw()
+dr = Drawer()
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     mw = MainWindow()

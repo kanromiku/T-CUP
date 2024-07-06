@@ -20,7 +20,7 @@ if not os.path.exists(path3):
     os.makedirs(path3)
 
 
-class Draw(Crawler):
+class Drawer(Crawler):
     def __init__(self):
         super().__init__()
         # 取消 Pandas 库的 Warning 提示，本项目使用了新版 Pandas 库的不推荐用法
@@ -232,4 +232,4 @@ class Draw(Crawler):
         fig.savefig('./assets/general/level.png')
 
 
-dr = Draw()
+dr = Drawer()
