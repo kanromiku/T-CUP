@@ -79,10 +79,6 @@ class MainWindow(QWidget):
         self.ImgLabel.setScaledContents(True)
         # print(self.img_dir)
 
-        self.ImgLabel.setPixmap(self.img.scaled(1500, 900, Qt.KeepAspectRatio, Qt.SmoothTransformation))  # 保持横纵比
-        self.ImgLabel.setScaledContents(True)
-        print(self.img_dir)
-
 
 
     def folder_opening(self):
