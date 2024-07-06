@@ -1,8 +1,8 @@
-import pandas as pd
 import os
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import numpy as np
+import pandas as pd
 
 from Tcrawler import Crawler
 
@@ -19,9 +19,11 @@ if not os.path.exists(path2):
 if not os.path.exists(path3):
     os.makedirs(path3)
 
+
 class Draw(Crawler):
     def __init__(self):
         super().__init__()
+        # 取消 Pandas 库的 Warning 提示，本项目使用了新版 Pandas 库的不推荐用法
         pd.options.mode.chained_assignment = None
         # print(self.df)
         # print(self.top)
@@ -44,7 +46,7 @@ class Draw(Crawler):
             std.append(x)
         ev_label = ev.loc[:, 'Name']
 
-        fig = plt.figure(figsize=(12, 6),dpi=200)
+        fig = plt.figure(figsize=(12, 6), dpi=200)
 
         ax1 = fig.add_axes((0.1, 0.1, 0.8, 0.8))
         ax2 = ax1.twinx()
@@ -74,7 +76,7 @@ class Draw(Crawler):
 
         fig.savefig('./assets/ev/price_and_sales.png')
 
-        #fig.show()
+        # fig.show()
 
     def fv_draw_price_and_sales(self):
         fv = self.df[self.df['Type'] == '燃油车']
@@ -89,7 +91,7 @@ class Draw(Crawler):
             std.append(x)
         fv_label = fv.loc[:, 'Name']
 
-        fig = plt.figure(figsize=(12, 6),dpi=200)
+        fig = plt.figure(figsize=(12, 6), dpi=200)
 
         ax3 = fig.add_axes((0.1, 0.1, 0.8, 0.8))
         ax4 = ax3.twinx()
@@ -119,22 +121,19 @@ class Draw(Crawler):
 
         fig.savefig('./assets/fv/price_and_sales.png')
 
-        #fig.show()
-
+        # fig.show()
 
     def ev_draw_score(self):
         ev = self.df[self.df['Type'] == '新能源车']
         ev.reset_index(drop=True, inplace=True)
         ev_label = ev.loc[:, 'Name']
         ev_score = ev.loc[:, 'Score']
-        sorted_indices = np.argsort(ev_score)
-        ev_score_sorted = ev_score[sorted_indices]
 
-        fig = plt.figure(figsize=(12, 6),dpi=200)
+        fig = plt.figure(figsize=(12, 6), dpi=200)
 
         ax1 = fig.add_axes((0.1, 0.1, 0.8, 0.8))
 
-        ax1.scatter(ev_label, ev_score_sorted, color='green', marker='o')
+        ax1.scatter(ev_label, ev_score, color='green', marker='o')
 
         ax1.set_xlabel('名称（销量自左往右从高到低）')
         ax1.set_ylabel('评分')
@@ -143,22 +142,19 @@ class Draw(Crawler):
 
         fig.savefig('./assets/ev/score.png')
 
-        #fig.show()
-
+        # fig.show()
 
     def fv_draw_score(self):
         fv = self.df[self.df['Type'] == '燃油车']
         fv.reset_index(drop=True, inplace=True)
         fv_label = fv.loc[:, 'Name']
         fv_score = fv.loc[:, 'Score']
-        sorted_indices = np.argsort(fv_score)
-        fv_score_sorted = fv_score[sorted_indices]
 
-        fig = plt.figure(figsize=(12, 6),dpi=200)
+        fig = plt.figure(figsize=(12, 6), dpi=200)
 
         ax1 = fig.add_axes((0.1, 0.1, 0.8, 0.8))
 
-        ax1.scatter(fv_label, fv_score_sorted, color='green', marker='o')
+        ax1.scatter(fv_label, fv_score, color='green', marker='o')
 
         ax1.set_xlabel('名称（销量自左往右从高到低）')
         ax1.set_ylabel('评分')
@@ -167,7 +163,7 @@ class Draw(Crawler):
 
         fig.savefig('./assets/fv/score.png')
 
-        #fig.show()
+        # fig.show()
 
     def level(self):
 
@@ -232,7 +228,8 @@ class Draw(Crawler):
         fig3.set_title('总车型占比')
 
         fig.tight_layout()
-        #fig.show()
+        # fig.show()
         fig.savefig('./assets/general/level.png')
+
 
 dr = Draw()

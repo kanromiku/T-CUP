@@ -3,8 +3,9 @@ import requests
 from lxml import etree
 
 
+# 寻找最小交集
 def find_price_range_intersection(price_range):
-    # 将字符串转换为（min, max）元组
+    # 输入多个（min, max）元组构成的列表
 
     intersection = price_range[0]
 
@@ -30,7 +31,9 @@ def find_price_range_intersection(price_range):
 class Crawler:
     def __init__(self, top=20):
 
+        # 取消 Pandas 库的 Warning 提示，本项目使用了新版 Pandas 库的不推荐用法
         pd.options.mode.chained_assignment = None
+
         self.ev_cars = []
         self.fuel_cars = []
         self.all_cars = []
@@ -115,7 +118,7 @@ class Crawler:
             temp_dict['LPrice'] = low
             temp_dict['HPrice'] = high
             temp_dict['Sales'] = XL_1.strip()
-            temp_dict['Score'] = PF_1.strip()
+            temp_dict['Score'] = float(PF_1.strip())
             temp_dict['Level'] = LVL_1.strip()
 
             # print(str(i), MZ_1, JG_1, XL_1, PF_1, LVL_1)
@@ -182,7 +185,7 @@ class Crawler:
             temp_dict['LPrice'] = low
             temp_dict['HPrice'] = high
             temp_dict['Sales'] = XL_2.strip()
-            temp_dict['Score'] = PF_2.strip()
+            temp_dict['Score'] = float(PF_2.strip())
             temp_dict['Level'] = LVL_2.strip()
 
             # print(str(i), MZ_2, JG_2, XL_2, PF_2, LVL_2)
