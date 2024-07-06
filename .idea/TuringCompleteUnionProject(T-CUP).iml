@@ -4,6 +4,11 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
+      <excludeFolder url="file://$MODULE_DIR$/assets" />
+      <excludeFolder url="file://$MODULE_DIR$/build" />
+      <excludeFolder url="file://$MODULE_DIR$/build/run/localpycs" />
+      <excludeFolder url="file://$MODULE_DIR$/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/ignored" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.12 (TuringCompleteUnionProject)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
